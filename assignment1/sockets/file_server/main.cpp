@@ -14,35 +14,21 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <iknlib.h>
+
+#include "../functions/sockfunctions.h"
 
 #define BUFFER_SIZE 1024
 
-void sendFile(std::string fileName, long fileSize, int outToClient);
-
-/**
- * main starter serveren og venter på en forbindelse fra en klient
- * Læser filnavn som kommer fra klienten.
- * Undersøger om filens findes på serveren.
- * Sender filstørrelsen tilbage til klienten (0 = Filens findes ikke)
- * Hvis filen findes sendes den nu til klienten
- *
- * HUSK at lukke forbindelsen til klienten og filen nÃ¥r denne er sendt til klienten
- *
- * @throws IOException
- *
- */
 int main(int argc, char *argv[])
 {
-  int sockfd, newsockfd, portno;
+  int sockfd, newsockfd, portno, n;
   char buffer[BUFFER_SIZE];
   struct sockaddr_in serv_addr, cli_addr;
   socklen_t clilen = sizeof(cli_addr);
-  int n;
 
   // Check argument count
   if (argc < 2) {
-    fprintf(stderr,"ERROR, no port provided\n");
+    fprintf(stderr,"Usage: %s [portno]\n\r", argv[0]);
     exit(1);
   }
 
@@ -55,7 +41,7 @@ int main(int argc, char *argv[])
   portno = atoi(argv[1]);
 
   // Setup serv_addr
-  bzero((char *) &serv_addr, sizeof(serv_addr));
+  memset(&serv_addr, 0, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
@@ -67,40 +53,32 @@ int main(int argc, char *argv[])
   // Start listening on socket
   listen(sockfd, 5);
 
-  // Block until new connection is established
-  newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen);
+  bool running = true;
 
   // Main server loop
-  while (true)
+  while (running)
   {
+    // Block until new connection is established
+    newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen);
+
     // Clear buffer and read filename
     bzero(buffer, BUFFER_SIZE);
-    n = read(newsockfd, buffer, BUFFER_SIZE - 1);
-
-    // Output recieved string
-    std::printf("Message recieved:\n%s\n\r", buffer);
+    readTextFromSocket(buffer, BUFFER_SIZE - 1, newsockfd);
 
     if (strcmp(buffer, "exit") == 0)
-    {
-      close(newsockfd);
-      break;
-    }
+      running = false;
+
+    // Output recieved string
+    std::printf("%d: Message recieved:\n\t%s\n\r", portno, buffer);
+
+    if (running)
+      sendFile(BUFFER_SIZE, newsockfd);
+
+    close(newsockfd);
   }
 
   close(sockfd);
 
   return 0;
-}
-
-/**
- * Sender filen som har navnet fileName til klienten
- *
- * @param fileName Filnavn som skal sendes til klienten
- * @param fileSize Størrelsen på filen, 0 hvis den ikke findes
- * @param outToClient Stream som der skrives til socket
-     */
-void sendFile(std::string fileName, long fileSize, int outToClient)
-{
-    // TO DO Your own code
 }
 

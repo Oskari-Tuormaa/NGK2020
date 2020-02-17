@@ -15,11 +15,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <iknlib.h>
+
+#include "../functions/sockfunctions.h"
 
 #define BUFFER_SIZE 1024
-
-void receiveFile(std::string fileName, int sockfd);
 
 int main(int argc, char ** argv)
 {
@@ -29,26 +28,23 @@ int main(int argc, char ** argv)
   char buffer[BUFFER_SIZE];
 
   // Check proper argument count
-  if (argc == 2)
+  if (argc == 3)
+    error("No filename provided\n\r");
+  if(argc < 4)
   {
-    std::fprintf(stderr, "ERROR: No port provided\n\r");
-    exit(1);
-  }
-  else if (argc < 3)
-  {
-    std::fprintf(stderr, "Usage: %s hostname port\n\r", argv[0]);
+    std::fprintf(stderr, "Usage: %s [hostname] [port] [filename]\n\r", argv[0]);
     exit(0);
   }
 
   // Create socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
-    error("ERROR: Couldn't open socket\n\r");
+    error("Couldn't open socket\n\r");
 
   // Get server
   server = gethostbyname(argv[1]);
   if (server == NULL)
-    error("ERROR: No such host\n\r");
+    error("No such host\n\r");
 
   // Get port number from arguments
   portno = atoi(argv[2]);
@@ -65,39 +61,16 @@ int main(int argc, char ** argv)
 
   // Connect to server
   if (connect(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
-    error("ERROR: Couldn't connect to server\n\r");
+    error("Couldn't connect to server\n\r");
 
-  while (true)
-  {
-    printf("Enter filename:\n\r");
-    bzero(buffer, BUFFER_SIZE);
-    std::cin >> buffer;
+  sprintf(buffer, "%s", argv[3]);
 
-    n = write(sockfd, buffer, strlen(buffer));
-    if (n < 0)
-      error("ERROR: Couldn't write to socket\n\r");
+  sendTextToSocket(buffer, sockfd);
 
-    if (strcmp(buffer, "exit") == 0)
-      break;
-  }
+  receiveFile(buffer, BUFFER_SIZE, sockfd);
 
   close(sockfd);
 
   return 0;
-}
-
-/**
- * Modtager filstørrelsen og udskriver meddelelsen: "Filen findes ikke" hvis størrelsen = 0
- * ellers
- * Åbnes filen for at skrive de bytes som senere modtages fra serveren (HUSK kun selve filnavn)
- * Modtag og gem filen i blokke af 1000 bytes indtil alle bytes er modtaget.
- * Luk filen, samt input output streams
- *
- * @param fileName Det fulde filnavn incl. evt. stinavn
- * @param sockfd Stream for at skrive til/læse fra serveren
- */
-void receiveFile(std::string fileName, int sockfd)
-{
-  // TO DO Your own code
 }
 
