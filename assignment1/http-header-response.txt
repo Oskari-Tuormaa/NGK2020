@@ -1,0 +1,24 @@
+##### HTTP REQUEST HEADER
+GET /I4IKN HTTP/1.1\r\n
+Host: i4prj.ase.au.dk\r\n
+Connection: keep-alive\r\n
+Upgrade-Insecure-Requests: 1\r\n
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36\r\n
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n
+Accept-Encoding: gzip, deflate\r\n
+Accept-Language: en-US,en;q=0.9,da;q=0.8,fi;q=0.7\r\n
+Cookie: au_wayf_user=true; _gcl_au=1.1.1435404882.1579786891; _ga=GA1.2.907119858.1579786892; mitau_studerende_aktiv=true; allow_cookies=true\r\n
+\r\n
+[Full request URI: http://i4prj.ase.au.dk/I4IKN]
+[HTTP request 1/1]
+
+##### HTTP RESPONSE HEADER
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Type: text/html; charset=utf-8
+Server: Microsoft-IIS/8.0
+X-AspNetMvc-Version: 5.2
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Mon, 10 Feb 2020 12:04:38 GMT
+Content-Length: 255303
