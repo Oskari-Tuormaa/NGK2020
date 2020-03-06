@@ -63,6 +63,7 @@ int main(int argc, char ** argv)
   if (connect(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
     error("Couldn't connect to server\n\r");
 
+  // Get fourth argument
   sprintf(buffer, "%s", argv[3]);
 
   sendTextToSocket(buffer, sockfd);

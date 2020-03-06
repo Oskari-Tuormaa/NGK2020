@@ -4,25 +4,25 @@ CXXFLAGS=-I.
 BUILDDIR=build
 BINDIR=bin
 
-EXE=client/file_client server/file_server
+EXE=client/client server/server
 EXE:=$(addprefix $(BINDIR)/,$(EXE))
 SOURCE=functions/sockfunctions.cpp
 
-SOURCE_CLIENT=file_client/main.cpp $(SOURCE)
+SOURCE_CLIENT=client/main.cpp $(SOURCE)
 OBJ_CLIENT=$(addprefix $(BUILDDIR)/,$(SOURCE_CLIENT:.cpp=.o))
 DEP_CLIENT=$(addprefix $(BUILDDIR)/,$(SOURCE_CLIENT:.cpp=.d))
 
-SOURCE_SERVER=file_server/main.cpp $(SOURCE)
+SOURCE_SERVER=server/main.cpp $(SOURCE)
 OBJ_SERVER=$(addprefix $(BUILDDIR)/,$(SOURCE_SERVER:.cpp=.o))
 DEP_SERVER=$(addprefix $(BUILDDIR)/,$(SOURCE_SERVER:.cpp=.d))
 
 all: $(EXE)
 
-$(BINDIR)/client/file_client: $(DEP_CLIENT) $(OBJ_CLIENT)
+$(BINDIR)/client/client: $(DEP_CLIENT) $(OBJ_CLIENT)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_CLIENT)
 
-$(BINDIR)/server/file_server: $(DEP_SERVER) $(OBJ_SERVER)
+$(BINDIR)/server/server: $(DEP_SERVER) $(OBJ_SERVER)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_SERVER)
 
@@ -39,3 +39,7 @@ clean:
 	rm -rf $(BUILDDIR) $(BINDIR)
 
 .PHONY: clean all
+
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEPS)
+endif

@@ -21,7 +21,7 @@
 
 int main(int argc, char *argv[])
 {
-  int sockfd, newsockfd, portno, n;
+  int sockfd, newsockfd, portno;
   char buffer[BUFFER_SIZE];
   struct sockaddr_in serv_addr, cli_addr;
   socklen_t clilen = sizeof(cli_addr);
