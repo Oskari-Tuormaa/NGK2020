@@ -2,7 +2,7 @@ import sys
 import socket
 import select
 
-localIP = "127.0.0.1"
+localIP = "0.0.0.0" # Bind to every available IP
 localPort = int(sys.argv[1])
 bufferSize = 256
 
@@ -26,6 +26,8 @@ while(running):
 
         msg = msg.decode()
 
+        print("Received {} from {}.".format(msg, address))
+
         if msg == "l" or msg == 'L':
             response = f_l.read()
             f_l.seek(0)
@@ -38,7 +40,6 @@ while(running):
 
         elif msg == "q" or msg == "Q":
             running = False
-            print("Received q from {}, shutting down".format(address))
             UDPServerSocket.sendto(str.encode("Server shutting down"), address)
 
         else:
