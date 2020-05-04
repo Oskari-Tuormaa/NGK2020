@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/oskari/Documents/aspnet/aspnet.csproj": {}
+  },
+  "projects": {
+    "/home/oskari/Documents/aspnet/aspnet.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/oskari/Documents/aspnet/aspnet.csproj",
+        "projectName": "aspnet",
+        "projectPath": "/home/oskari/Documents/aspnet/aspnet.csproj",
+        "packagesPath": "/home/oskari/.nuget/packages/",
+        "outputPath": "/home/oskari/Documents/aspnet/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/oskari/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.201/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
