@@ -8,7 +8,7 @@ namespace observationServer.Models
         private int humidity;
         private float pressure;
 
-        public int id { get; set; }
+        public int Id { get; set; }
         public DateTime Date { get; set; }           // Required
         public string Name { get; set; }             // Required
         public double Latitude { get; set; }

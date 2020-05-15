@@ -40,9 +40,9 @@ namespace observationServer.Controllers
 
             // Assign lowest available id to observation
             int id = 1;
-            while (observations.Find(x => x.id == id) != null)
+            while (observations.Find(x => x.Id == id) != null)
                 id++;
-            observation.id = id;
+            observation.Id = id;
 
             observations.Add(observation);
 
@@ -60,10 +60,10 @@ namespace observationServer.Controllers
             List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
                     System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-            Observation toRemove = observations.Find(x => x.id == toDelete.id);
+            Observation toRemove = observations.Find(x => x.Id == toDelete.Id);
 
             if (toRemove == null)
-                return BadRequest($"No observation with ID {toDelete.id} exists");
+                return BadRequest($"No observation with ID {toDelete.Id} exists");
 
             observations.Remove(toRemove);
 
