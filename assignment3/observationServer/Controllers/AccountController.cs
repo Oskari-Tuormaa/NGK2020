@@ -24,7 +24,7 @@ namespace observationServer.Controllers
 
       [AllowAnonymous]
       [HttpPost("login")]
-      public IActionResult Login([FromBody] RegAccount accountParam)
+      public IActionResult Login([FromBody] Account accountParam)
       {
         if (accountParam.email == null)
           return BadRequest("No email provided");
@@ -42,8 +42,14 @@ namespace observationServer.Controllers
 
       [AllowAnonymous]
       [HttpPost("register")]
-      public IActionResult Register([FromBody] RegAccount accountParam)
+      public IActionResult Register([FromBody] Account accountParam)
       {
+        if (accountParam.email == null)
+          return BadRequest("No email provided");
+
+        if (accountParam.password == null)
+          return BadRequest("No password provided");
+
         var account = _accountService.Register(accountParam.email, accountParam.password);
 
         if (account == null)
@@ -60,15 +66,19 @@ namespace observationServer.Controllers
       }
 
       [HttpDelete]
-      public IActionResult Delete([FromBody] RegAccount accountParam)
+      public IActionResult Delete([FromBody] Account accountParam)
       {
         if (accountParam.email == null)
           return BadRequest("No email provided");
 
-        Account deleted = _accountService.Delete(accountParam.email);
+        if (accountParam.password == null)
+          return BadRequest("No password provided");
+
+        Account deleted = _accountService.Delete(accountParam.email, accountParam.password);
 
         if (deleted == null)
-          return BadRequest($"Account with email {accountParam.email} doesn't exist");
+          return BadRequest("Email or password is incorrect");
+          
         return Ok(deleted);
       }
     }

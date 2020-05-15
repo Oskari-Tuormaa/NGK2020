@@ -16,115 +16,110 @@ namespace observationServer.Controllers
     [ApiController]
     public class ObservationController : ControllerBase
     {
-      private readonly AppSettings _appSettings;
+        private readonly AppSettings _appSettings;
 
-      public ObservationController(IOptions<AppSettings> appSettings)
-      {
-        _appSettings = appSettings.Value;
-      }
+        public ObservationController(IOptions<AppSettings> appSettings)
+        {
+            _appSettings = appSettings.Value;
+        }
 
-      [HttpPost, Authorize]
-      public IActionResult Post([FromBody] Observation observation)
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+        [HttpPost, Authorize]
+        public IActionResult Post([FromBody] Observation observation)
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
+            // Validate passed data
+            if (observation.Date == new DateTime())
+                return BadRequest("Observation date is required");
+            if (observation.Name == "" || observation.Name == null)
+                return BadRequest("Observation name is required");
 
-        if (observations.Count() > 0)
-          observation.id = observations.AsEnumerable().OrderByDescending(x => x.id).First().id + 1;
-        else
-          observation.id = 1;
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-        observations.Add(observation);
+            // Assign lowest available id to observation
+            int id = 1;
+            while (observations.Find(x => x.id == id) != null)
+                id++;
+            observation.id = id;
 
-        System.IO.File.WriteAllText(_appSettings.ObservationDir,
-            JsonConvert.SerializeObject(observations));
-        return Ok(observation);
-      }
+            observations.Add(observation);
 
-      [HttpDelete, Authorize]
-      public IActionResult Remove([FromBody] Observation toDelete)
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            System.IO.File.WriteAllText(_appSettings.ObservationDir,
+                    JsonConvert.SerializeObject(observations));
+            return Ok(observation);
+        }
 
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
+        [HttpDelete, Authorize]
+        public IActionResult Remove([FromBody] Observation toDelete)
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        Observation toRemove = observations.Find(x => x.id == toDelete.id);
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-        if (toRemove == null)
-          return BadRequest($"No observation with ID {toDelete.id} exists");
+            Observation toRemove = observations.Find(x => x.id == toDelete.id);
 
-        observations.Remove(toRemove);
+            if (toRemove == null)
+                return BadRequest($"No observation with ID {toDelete.id} exists");
 
-        System.IO.File.WriteAllText(_appSettings.ObservationDir,
-            JsonConvert.SerializeObject(observations));
-        return Ok(toRemove);
-      }
+            observations.Remove(toRemove);
 
-      [HttpGet]
-      public IActionResult Get()
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            System.IO.File.WriteAllText(_appSettings.ObservationDir,
+                    JsonConvert.SerializeObject(observations));
+            return Ok(toRemove);
+        }
 
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
+        [HttpGet]
+        public IActionResult Get()
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        return Ok(observations);
-      }
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-      [HttpGet("latest")]
-      public IActionResult GetLatest()
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            return Ok(observations);
+        }
 
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
+        [HttpGet("latest")]
+        public IActionResult GetLatest()
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        observations.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-        return Ok(observations.Take(3));
-      }
+            observations.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
 
-      [HttpGet("{dateStr}")]
-      public IActionResult GetDate(string dateStr)
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            return Ok(observations.Take(3));
+        }
 
-        DateTime date;
-        if (!DateTime.TryParse(dateStr, out date))
-          return BadRequest("Date in wrong format");
+        [HttpGet("{date:datetime}")]
+        public IActionResult GetDate(DateTime date)
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-        return Ok(observations.FindAll(x => x.Date.Date.Equals(date.Date)));
-      }
+            return Ok(observations.FindAll(x => x.Date.Date.Equals(date.Date)));
+        }
 
-      [HttpGet("{dateStr1}/{dateStr2}")]
-      public IActionResult GetPeriod(string dateStr1, string dateStr2)
-      {
-        if (!System.IO.File.Exists(_appSettings.ObservationDir))
-          System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+        [HttpGet("{date1:datetime}/{date2:datetime}")]
+        public IActionResult GetPeriod(DateTime date1, DateTime date2)
+        {
+            if (!System.IO.File.Exists(_appSettings.ObservationDir))
+                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
 
-        DateTime date1, date2;
+            List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
+                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
 
-        if (!DateTime.TryParse(dateStr1, out date1))
-          return BadRequest("Date1 in wrong format");
-
-        if (!DateTime.TryParse(dateStr2, out date2))
-          return BadRequest("Date2 in wrong format");
-
-        List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-            System.IO.File.ReadAllText(_appSettings.ObservationDir));
-
-        return Ok(observations.FindAll(x => x.Date >= date1 && x.Date <= date2));
-      }
+            return Ok(observations.FindAll(x => x.Date >= date1 && x.Date <= date2));
+        }
     }
 }

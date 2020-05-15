@@ -5,8 +5,8 @@ namespace observationServer.Models
   public class Observation
   {
     public int id { get; set; }
-    public DateTime Date { get; set; }
-    public string Name { get; set; }
+    public DateTime Date { get; set; }           // Required
+    public string Name { get; set; }             // Required
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public float Temperature { get; set; }
