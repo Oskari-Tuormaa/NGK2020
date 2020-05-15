@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Gr4BjvL6gAjRdKwdAnl8QyJS3YJgt3tpc98gr2ib87VRft4iJ/GuJgSjaZJdToDKLBpDk98bLOXI7ecrkLATZw==",
+  "dgSpecHash": "d8OmKIAmIagg8LGL+nKz2OBD27RKEn+UWlrWMWR7qQ7+Y/G1OGDxO/BjL9fQf291p1sawjBpGSuSuiHEgL+g+w==",
   "success": true,
-  "projectFilePath": "/home/oskari/Repos/NGK2020/assignment3/observationServer/observationServer.csproj",
+  "projectFilePath": "/home/oskari/Repos/NGK2020/assignment3/ObservationAPI/observationServer.csproj",
   "expectedPackageFiles": [
     "/home/oskari/.nuget/packages/bcrypt.net-next/4.0.0/bcrypt.net-next.4.0.0.nupkg.sha512",
     "/home/oskari/.nuget/packages/microsoft.aspnet.signalr/2.4.1/microsoft.aspnet.signalr.2.4.1.nupkg.sha512",

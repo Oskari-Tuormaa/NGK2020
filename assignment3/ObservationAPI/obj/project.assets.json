@@ -6445,11 +6445,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/oskari/Repos/NGK2020/assignment3/observationServer/observationServer.csproj",
+      "projectUniqueName": "/home/oskari/Repos/NGK2020/assignment3/ObservationAPI/observationServer.csproj",
       "projectName": "observationServer",
-      "projectPath": "/home/oskari/Repos/NGK2020/assignment3/observationServer/observationServer.csproj",
+      "projectPath": "/home/oskari/Repos/NGK2020/assignment3/ObservationAPI/observationServer.csproj",
       "packagesPath": "/home/oskari/.nuget/packages/",
-      "outputPath": "/home/oskari/Repos/NGK2020/assignment3/observationServer/obj/",
+      "outputPath": "/home/oskari/Repos/NGK2020/assignment3/ObservationAPI/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/oskari/.nuget/NuGet/NuGet.Config"
