@@ -58,13 +58,6 @@ namespace ObservationAPI.Controllers
             return Ok(account);
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var accounts = _accountService.GetAll();
-            return Ok(accounts);
-        }
-
         [HttpDelete]
         public IActionResult Delete([FromBody] Account accountParam)
         {
@@ -80,6 +73,13 @@ namespace ObservationAPI.Controllers
                 return BadRequest("Email or password is incorrect");
 
             return Ok(deleted);
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var accounts = _accountService.GetAll();
+            return Ok(accounts);
         }
     }
 }
