@@ -26,13 +26,13 @@ namespace ObservationAPI.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] Account accountParam)
         {
-            if (accountParam.email == null)
+            if (accountParam.Email == null)
                 return BadRequest("No email provided");
 
-            if (accountParam.password == null)
+            if (accountParam.Password == null)
                 return BadRequest("No password provided");
 
-            var account = _accountService.Authenticate(accountParam.email, accountParam.password);
+            var account = _accountService.Authenticate(accountParam.Email, accountParam.Password);
 
             if (account == null)
                 return BadRequest("Email or password is incorrect");
@@ -44,13 +44,13 @@ namespace ObservationAPI.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] Account accountParam)
         {
-            if (accountParam.email == null)
+            if (accountParam.Email == null)
                 return BadRequest("No email provided");
 
-            if (accountParam.password == null)
+            if (accountParam.Password == null)
                 return BadRequest("No password provided");
 
-            var account = _accountService.Register(accountParam.email, accountParam.password);
+            var account = _accountService.Register(accountParam.Email, accountParam.Password);
 
             if (account == null)
                 return BadRequest("Email already taken");
@@ -61,13 +61,13 @@ namespace ObservationAPI.Controllers
         [HttpDelete]
         public IActionResult Delete([FromBody] Account accountParam)
         {
-            if (accountParam.email == null)
+            if (accountParam.Email == null)
                 return BadRequest("No email provided");
 
-            if (accountParam.password == null)
+            if (accountParam.Password == null)
                 return BadRequest("No password provided");
 
-            Account deleted = _accountService.Delete(accountParam.email, accountParam.password);
+            Account deleted = _accountService.Delete(accountParam.Email, accountParam.Password);
 
             if (deleted == null)
                 return BadRequest("Email or password is incorrect");

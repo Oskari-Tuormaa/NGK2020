@@ -37,7 +37,7 @@ namespace ObservationAPI.Services
 
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
-            var account = accounts.Find(x => x.email == email && BCrypt.Net.BCrypt.EnhancedVerify(password, x.passwordHash));
+            var account = accounts.Find(x => x.Email == email && BCrypt.Net.BCrypt.EnhancedVerify(password, x.PasswordHash));
 
             // Return if either email or password is wrong
             if (account == null)
@@ -50,7 +50,7 @@ namespace ObservationAPI.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                         {
-                        new Claim(ClaimTypes.Name, account.id.ToString())
+                        new Claim(ClaimTypes.Name, account.Id.ToString())
                         }),
                         Expires = DateTime.UtcNow.AddMinutes(5),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -58,7 +58,7 @@ namespace ObservationAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             account.Token = tokenHandler.WriteToken(token);
 
-            account.passwordHash = null;
+            account.PasswordHash = null;
 
             return account;
         }
@@ -71,21 +71,21 @@ namespace ObservationAPI.Services
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
 
-            if (accounts.Find(x => x.email == email) != null) // email already exists
+            if (accounts.Find(x => x.Email == email) != null) // email already exists
                 return null;
 
             string passwordHashed = BCrypt.Net.BCrypt.EnhancedHashPassword(password);
 
             // Find lowest available id
             int lowestId = 1;
-            while (accounts.Find(x => x.id == lowestId) != null)
+            while (accounts.Find(x => x.Id == lowestId) != null)
                 lowestId++;
 
             Account newAccount = new Account
             {
-                email = email,
-                      passwordHash = passwordHashed,
-                      id = lowestId
+                Email = email,
+                PasswordHash = passwordHashed,
+                Id = lowestId
             };
 
             accounts.Add(newAccount);
@@ -93,7 +93,7 @@ namespace ObservationAPI.Services
             File.WriteAllText(_appSettings.AccountDir,
                     JsonConvert.SerializeObject(accounts));
 
-            newAccount.passwordHash = null;
+            newAccount.PasswordHash = null;
 
             return newAccount;
         }
@@ -106,7 +106,7 @@ namespace ObservationAPI.Services
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
 
-            Account toDelete = accounts.Find(x => x.email == email && BCrypt.Net.BCrypt.EnhancedVerify(password, x.passwordHash));
+            Account toDelete = accounts.Find(x => x.Email == email && BCrypt.Net.BCrypt.EnhancedVerify(password, x.PasswordHash));
 
             if (toDelete == null)
                 return null;
@@ -116,7 +116,7 @@ namespace ObservationAPI.Services
             File.WriteAllText(_appSettings.AccountDir,
                     JsonConvert.SerializeObject(accounts));
 
-            toDelete.passwordHash = null;
+            toDelete.PasswordHash = null;
 
             return toDelete;
         }
@@ -129,7 +129,7 @@ namespace ObservationAPI.Services
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
             return accounts.Select(x => {
-                    x.passwordHash = null;
+                    x.PasswordHash = null;
                     return x;
                     });
         }
