@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+    using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
@@ -72,22 +72,22 @@ namespace ObservationAPI.Services
 
         public IEnumerable<Observation> GetAll()
         {
-            if (!System.IO.File.Exists(_appSettings.ObservationDir))
-                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            if (!File.Exists(_appSettings.ObservationDir))
+                File.WriteAllText(_appSettings.ObservationDir, "[]");
 
             List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
+                    File.ReadAllText(_appSettings.ObservationDir));
 
             return observations;
         }
 
         public IEnumerable<Observation> GetLatest()
         {
-            if (!System.IO.File.Exists(_appSettings.ObservationDir))
-                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            if (!File.Exists(_appSettings.ObservationDir))
+                File.WriteAllText(_appSettings.ObservationDir, "[]");
 
             List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
+                    File.ReadAllText(_appSettings.ObservationDir));
 
             observations.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
 
@@ -96,22 +96,22 @@ namespace ObservationAPI.Services
 
         public IEnumerable<Observation> GetDate(DateTime date)
         {
-            if (!System.IO.File.Exists(_appSettings.ObservationDir))
-                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            if (!File.Exists(_appSettings.ObservationDir))
+                File.WriteAllText(_appSettings.ObservationDir, "[]");
 
             List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
+                    File.ReadAllText(_appSettings.ObservationDir));
 
             return observations.FindAll(x => x.Date.Date.Equals(date.Date));
         }
 
         public IEnumerable<Observation> GetPeriod(DateTime date1, DateTime date2)
         {
-            if (!System.IO.File.Exists(_appSettings.ObservationDir))
-                System.IO.File.WriteAllText(_appSettings.ObservationDir, "[]");
+            if (!File.Exists(_appSettings.ObservationDir))
+                File.WriteAllText(_appSettings.ObservationDir, "[]");
 
             List<Observation> observations = JsonConvert.DeserializeObject<List<Observation>>(
-                    System.IO.File.ReadAllText(_appSettings.ObservationDir));
+                    File.ReadAllText(_appSettings.ObservationDir));
 
             return observations.FindAll(x => x.Date >= date1 && x.Date <= date2);
         }

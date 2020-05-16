@@ -32,8 +32,8 @@ namespace ObservationAPI.Services
 
         public Account Authenticate(string email, string password)
         {
-            if (!System.IO.File.Exists(_appSettings.AccountDir))
-                System.IO.File.WriteAllText(_appSettings.AccountDir, "[]");
+            if (!File.Exists(_appSettings.AccountDir))
+                File.WriteAllText(_appSettings.AccountDir, "[]");
 
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
@@ -65,8 +65,8 @@ namespace ObservationAPI.Services
 
         public Account Register(string email, string password)
         {
-            if (!System.IO.File.Exists(_appSettings.AccountDir))
-                System.IO.File.WriteAllText(_appSettings.AccountDir, "[]");
+            if (!File.Exists(_appSettings.AccountDir))
+                File.WriteAllText(_appSettings.AccountDir, "[]");
 
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
@@ -100,8 +100,8 @@ namespace ObservationAPI.Services
 
         public Account Delete(string email, string password)
         {
-            if (!System.IO.File.Exists(_appSettings.AccountDir))
-                System.IO.File.WriteAllText(_appSettings.AccountDir, "[]");
+            if (!File.Exists(_appSettings.AccountDir))
+                File.WriteAllText(_appSettings.AccountDir, "[]");
 
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
@@ -123,8 +123,8 @@ namespace ObservationAPI.Services
 
         public IEnumerable<Account> GetAll()
         {
-            if (!System.IO.File.Exists(_appSettings.AccountDir))
-                System.IO.File.WriteAllText(_appSettings.AccountDir, "[]");
+            if (!File.Exists(_appSettings.AccountDir))
+                File.WriteAllText(_appSettings.AccountDir, "[]");
 
             List<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(
                     File.ReadAllText(_appSettings.AccountDir));
