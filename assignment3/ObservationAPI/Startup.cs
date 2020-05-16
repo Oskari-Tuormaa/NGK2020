@@ -20,73 +20,69 @@ using ObservationAPI.Hubs;
 
 namespace ObservationAPI
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      Configuration = configuration;
-    }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-    public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddControllers();
-      services.AddSignalR();
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers();
+            services.AddSignalR();
 
-      var appSettingsSection = Configuration.GetSection("AppSettings");
-      services.Configure<AppSettings>(appSettingsSection);
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
 
-      var appSettings = appSettingsSection.Get<AppSettings>();
-      var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-      // Configure JWT authentication
-      services.AddAuthentication(options =>
-          {
-          options.DefaultAuthenticateScheme = "Jwt";
-          options.DefaultChallengeScheme = "Jwt";
-          }).AddJwtBearer("Jwt", options =>
+            // Configure JWT authentication
+            services.AddAuthentication(options => {
+                    options.DefaultAuthenticateScheme = "Jwt";
+                    options.DefaultChallengeScheme = "Jwt"; })
+                .AddJwtBearer("Jwt", options => {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters {
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                        ValidateLifetime = true,
+                    };
+                }
+            );
+
+            services.AddScoped<IAccountService, AccountService>();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
             {
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-            ValidateAudience = false,
-            ValidateIssuer = false,
+                app.UseDeveloperExceptionPage();
+            }
 
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
+            app.UseHttpsRedirection();
 
-            ValidateLifetime = true,
+            app.UseRouting();
 
-            ClockSkew = TimeSpan.FromMinutes(5)
-            };
-            });
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-      services.AddScoped<IAccountService, AccountService>();
+            app.UseEndpoints(endpoints =>
+                    {
+                    endpoints.MapControllers();
+                    endpoints.MapHub<ObservationHub>("/observationHub");
+                    });
+        }
     }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-
-      app.UseHttpsRedirection();
-
-      app.UseRouting();
-
-      app.UseAuthentication();
-      app.UseAuthorization();
-
-      app.UseEndpoints(endpoints =>
-          {
-          endpoints.MapControllers();
-          endpoints.MapHub<ObservationHub>("/observationHub");
-          });
-    }
-  }
 }
