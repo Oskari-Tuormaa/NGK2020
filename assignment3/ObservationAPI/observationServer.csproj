@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="bcrypt.net-next" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.1" />
   </ItemGroup>
